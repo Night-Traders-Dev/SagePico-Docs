@@ -85,8 +85,8 @@ export default function App() {
           <div className="mt-6 flex gap-3 flex-wrap">
             <span className="badge badge-green">ARM Cortex-M33</span>
             <span className="badge badge-green">RISC-V Hazard3</span>
-            <span className="badge badge-blue">57 FFI Functions</span>
-            <span className="badge badge-blue">14 Sage Modules</span>
+            <span className="badge badge-blue">67 FFI Functions</span>
+            <span className="badge badge-blue">7 PIO Engines</span>
             <span className="badge badge-yellow">94K Firmware</span>
           </div>
         </div>
@@ -123,6 +123,72 @@ sagecom --port /dev/ttyACM0`}</pre>
               </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Benchmarks */}
+      <section className="border-b border-gray-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+          <h2 className="text-3xl font-bold text-white mb-8">Performance</h2>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm text-left">
+              <thead className="text-gray-400 border-b border-gray-800">
+                <tr>
+                  <th className="py-3 px-4 font-medium">Operation</th>
+                  <th className="py-3 px-4 font-medium text-right">Time</th>
+                  <th className="py-3 px-4 font-medium">Notes</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[
+                  ['1+1', '~0.5ms', 'Expression parse + eval'],
+                  ['sha256("hello")', '~1.2ms', '5 bytes, hardware SHA-256'],
+                  ['sha256 (256 bytes)', '~3ms', 'DMA streaming path'],
+                  ['crc32("hello")', '~0.3ms', 'Software CRC-32'],
+                  ['gpio_put / gpio_get', '~0.4ms', 'GPIO toggle'],
+                  ['clock_get()', '~0.3ms', 'Software clock read'],
+                  ['flash_save (10 bytes)', '~15ms', 'Flash sector erase + write'],
+                  ['flash_load', '~0.5ms', 'Flash XIP read'],
+                  ['trng_read()', '~2ms', '32-bit entropy from PIO TRNG'],
+                ].map(([op, time, note]) => (
+                  <tr key={op} className="border-b border-gray-800/50 hover:bg-gray-900/30 transition-colors">
+                    <td className="py-3 px-4 font-mono text-sage-400">{op}</td>
+                    <td className="py-3 px-4 text-right font-mono text-white">{time}</td>
+                    <td className="py-3 px-4 text-gray-500 text-xs">{note}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <h3 className="text-lg font-semibold text-sage-400 mt-8 mb-3">PIO vs CPU Speedup</h3>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm text-left">
+              <thead className="text-gray-400 border-b border-gray-800">
+                <tr>
+                  <th className="py-3 px-4 font-medium">Operation</th>
+                  <th className="py-3 px-4 font-medium text-right">CPU</th>
+                  <th className="py-3 px-4 font-medium text-right">PIO</th>
+                  <th className="py-3 px-4 font-medium text-right">Speedup</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[
+                  ['Framebuffer fill', '256K cycles', '256K cycles†', '1x (CPU-free)'],
+                  ['CRC-32 per byte', '50 cycles', '8 cycles', '6x'],
+                  ['GPIO pattern (32b)', '10 cycles', '1 cycle', '10x'],
+                  ['TRNG (32 bits)', 'N/A', '64 cycles', '∞'],
+                ].map(([op, cpu, pio, speed]) => (
+                  <tr key={op} className="border-b border-gray-800/50 hover:bg-gray-900/30 transition-colors">
+                    <td className="py-3 px-4 text-gray-300">{op}</td>
+                    <td className="py-3 px-4 text-right font-mono text-gray-500">{cpu}</td>
+                    <td className="py-3 px-4 text-right font-mono text-sage-400">{pio}</td>
+                    <td className="py-3 px-4 text-right font-mono text-white">{speed}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p className="mt-3 text-xs text-gray-600">† PIO runs in parallel — CPU continues executing while PIO works.</p>
         </div>
       </section>
 
