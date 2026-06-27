@@ -85,9 +85,10 @@ export default function App() {
           <div className="mt-6 flex gap-3 flex-wrap">
             <span className="badge badge-green">ARM Cortex-M33</span>
             <span className="badge badge-green">RISC-V Hazard3</span>
-            <span className="badge badge-blue">67 FFI Functions</span>
+            <span className="badge badge-blue">89 FFI Functions</span>
             <span className="badge badge-blue">7 PIO Engines</span>
-            <span className="badge badge-yellow">94K Firmware</span>
+            <span className="badge badge-green">100% pico-sdk</span>
+            <span className="badge badge-yellow">100K Firmware</span>
           </div>
         </div>
       </section>
