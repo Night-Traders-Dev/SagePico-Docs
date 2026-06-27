@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-type Section = 'overview' | 'build' | 'bench' | 'arch' | 'peripherals' | 'repl' | 'srvm' | 'tools' | 'vm'
+type Section = 'overview' | 'build' | 'bench' | 'arch' | 'peripherals' | 'repl' | 'srvm' | 'rtos' | 'tools' | 'vm'
 
 const NAV: { id: Section; label: string }[] = [
   { id: 'overview', label: 'Overview' },
@@ -10,6 +10,7 @@ const NAV: { id: Section; label: string }[] = [
   { id: 'peripherals', label: 'Peripherals' },
   { id: 'repl', label: 'REPL' },
   { id: 'srvm', label: 'SRVM' },
+  { id: 'rtos', label: 'RTOS' },
   { id: 'tools', label: 'Tools' },
   { id: 'vm', label: 'GFX VM' },
 ]
@@ -271,6 +272,38 @@ and 1.3-2.5x faster by bypassing Sage runtime overhead.`}</pre>
                 <li>• 64-entry heap dict for globals</li>
                 <li>• Binary loader for .sgrv format</li>
               </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* SageRTOS */}
+      <section id="rtos" className="border-b border-gray-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+          <h2 className="text-3xl font-bold text-white mb-8">SageRTOS</h2>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="card">
+              <h3 className="text-lg font-semibold text-sage-400 mb-3">Preemptive Kernel</h3>
+              <ul className="text-sm text-gray-400 space-y-1">
+                <li>• 16 tasks, priority round-robin</li>
+                <li>• ARM PendSV context switching (~3μs)</li>
+                <li>• 1ms SysTick with sleep/timer support</li>
+                <li>• 8 queues + 8 timers + mutexes</li>
+                <li>• Task notify with timeout</li>
+              </ul>
+            </div>
+            <div className="card">
+              <h3 className="text-lg font-semibold text-sage-400 mb-3">Pure Sage API</h3>
+              <pre className="code-block text-xs">{`sage> rtos_task(128, 1)   # Create task
+0
+sage> rtos_sleep(500)      # Sleep 500ms
+sage> rtos_yield()         # Yield CPU
+sage> rtos_id()            # Task ID: 0
+
+// Sage class:
+let rtos = SageRTOS()
+rtos.task_create("blink", fn, 1024, 1)
+rtos.start()`}</pre>
             </div>
           </div>
         </div>
